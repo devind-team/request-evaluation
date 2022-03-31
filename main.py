@@ -1,4 +1,3 @@
-import asyncio
 from fastapi import Depends, FastAPI
 from fastapi.responses import RedirectResponse
 from sqlalchemy.future import select
