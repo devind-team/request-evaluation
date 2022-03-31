@@ -1,12 +1,11 @@
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from settings import get_settings
 
-
-SQLALCHEMY_DATABASE_URL = 'postgresql+asyncpg://postgres:1234@localhost:5432/traffic'
 
 engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL, echo=True, future=True
+    get_settings().db_sync_connections, echo=True, future=True
 )
 
 
