@@ -9,11 +9,13 @@ python = "^3.9"
 fastapi = "^0.75.0"
 uvicorn = "^0.17.6"
 SQLAlchemy = "^1.4.32"
-python-dotenv = "^0.19.2"
 alembic = "^1.7.7"
 sqlmodel = "^0.0.6"
 psycopg2-binary = "^2.9.3"
 asyncpg = "^0.25.0"
+python-dotenv = "^0.20.0"
+docxtpl = "^0.15.2"
+Jinja2 = "^3.1.1"
 
 [tool.poetry.dev-dependencies]
 
