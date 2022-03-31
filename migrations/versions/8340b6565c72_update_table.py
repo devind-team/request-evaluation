@@ -1,8 +1,8 @@
-"""Initional migration
+"""Update table
 
-Revision ID: 48690f70f098
+Revision ID: 8340b6565c72
 Revises: 
-Create Date: 2022-03-24 14:21:13.533739
+Create Date: 2022-03-31 12:29:12.532461
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '48690f70f098'
+revision = '8340b6565c72'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,8 @@ def upgrade():
     op.create_table('traffic',
     sa.Column('create_at', sa.Date(), nullable=True),
     sa.Column('counter', sa.Integer(), nullable=True),
+    sa.Column('minimum_load', sa.Float(), nullable=True),
+    sa.Column('average_load', sa.Float(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('create_at')
