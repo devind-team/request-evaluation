@@ -4,9 +4,11 @@ from sqlalchemy.future import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
-from datetime import date
+from datetime import date, timedelta
 from database import get_session
 from models import Traffic, TrafficCreate
+from generate_word.generate_file import create_report
+from math import floor
 
 app = FastAPI()
 
@@ -25,9 +27,11 @@ async def calculate(session: AsyncSession = Depends(get_session)):
     update_records = insert_records.on_conflict_do_update(constraint='traffic_create_at_key',
                                                           set_=dict(counter=Traffic.counter + 1))
     await session.execute(update_records)
-    # await session.execute(update(Traffic).
-    #                       where(Traffic.create_at == date.today()).
-    #                       values(counter=Traffic.counter + 1))
+    await session.execute(update(Traffic).
+                          where(Traffic.create_at == date.today()).
+                          values(average_load=Traffic.counter * 0.0184,
+                                 maximum_load=Traffic.counter * 0.0305,
+                                 ))
     await session.commit()
 
 
@@ -40,3 +44,17 @@ async def add_traffic(traffic: TrafficCreate,
     await session.commit()
     await session.refresh(traffic)
     return traffic
+
+
+@app.get('/email',
+         response_model=list[Traffic])
+async def send_message(session: AsyncSession = Depends(get_session)):
+    get_record = (await session.execute(
+        select(Traffic).
+        where(Traffic.create_at == date.today() - timedelta(days=1)))).scalar()
+    path_report = create_report(get_record.counter,
+                                round(get_record.average_load, 2),
+                                round(get_record.maximum_load, 2)
+                                )
+    print(path_report)
+
