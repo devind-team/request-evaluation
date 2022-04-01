@@ -9,6 +9,16 @@ from dotenv import load_dotenv
 BASE_DIR: Path = Path(__file__).resolve(strict=False).parent
 load_dotenv(dotenv_path=join(BASE_DIR, '.env'))
 
+CONFIG_EMAIL = {
+    'MAIL_USERNAME': os.getenv('EMAIL_USERNAME'),
+    'MAIL_PASSWORD': os.getenv('EMAIL_PASSWORD'),
+    'MAIL_FROM': os.getenv('EMAIL_FROM'),
+    'MAIL_TO': os.getenv('EMAIL_TO'),
+    'MAIL_PORT': os.getenv('EMAIL_PORT'),
+    'MAIL_SERVER': os.getenv('EMAIL_SERVER')
+}
+MAIL_TO = os.getenv('EMAIL_TO')
+
 
 class Settings(BaseSettings):
     base_dir: Path = BASE_DIR
