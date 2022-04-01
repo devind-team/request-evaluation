@@ -8,7 +8,9 @@ from datetime import date, timedelta
 from database import get_session
 from models import Traffic, TrafficCreate
 from generate_word.generate_file import create_report
-from math import floor
+from send_message.send_email import send_file
+from settings import CONFIG_EMAIL
+from os import remove
 
 app = FastAPI()
 
@@ -56,5 +58,12 @@ async def send_message(session: AsyncSession = Depends(get_session)):
                                 round(get_record.average_load, 2),
                                 round(get_record.maximum_load, 2)
                                 )
-    print(path_report)
-
+    await send_file(CONFIG_EMAIL['MAIL_FROM'],
+                    CONFIG_EMAIL['MAIL_PASSWORD'],
+                    CONFIG_EMAIL['MAIL_FROM'],
+                    CONFIG_EMAIL['MAIL_TO'],
+                    path_report,
+                    CONFIG_EMAIL['MAIL_SERVER'],
+                    CONFIG_EMAIL['MAIL_PORT']
+                    )
+    remove(path_report)
