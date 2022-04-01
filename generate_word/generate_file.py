@@ -3,20 +3,18 @@ from settings import get_settings
 from docxtpl import DocxTemplate
 from datetime import date, timedelta
 
-CURRENT_DATE = date.today() - timedelta(days=1)
-PATH_REPORT = join(get_settings().static_dir, f'{CURRENT_DATE}.docx')
 
-
-def create_report(counter, avg_load, max_load):
+def create_report(counter: int, avg_load: float, max_load: float):
     template_word = DocxTemplate(join(get_settings().template_dir, 'report.docx'))
     template_word.render(
         {
-            'date': f'{CURRENT_DATE.day}.{CURRENT_DATE.month}.{CURRENT_DATE.year}',
+            'date': f"{(date.today() - timedelta(days=1)).strftime('%d.%m.%Y')}",
             'counter': counter,
             'avg_load': avg_load,
             'max_load': max_load
 
         }
     )
-    template_word.save(PATH_REPORT)
-    return PATH_REPORT
+    current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
+    template_word.save(join(get_settings().static_dir, f'{current_date}.docx'))
+    return join(get_settings().static_dir, f'{current_date}.docx')
