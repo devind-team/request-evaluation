@@ -6,8 +6,8 @@ from sqlalchemy import Date, Column
 
 class TrafficBase(SQLModel):
     counter: int = Field(default=1, title='Количество запросов в день')
-    minimum_load: float = Field(nullable=True, title='Минимальная нагрузка на сеть за день')
     average_load: float = Field(nullable=True, title='Средняя нагрузка на сеть за день')
+    maximum_load: float = Field(nullable=True, title='Максимальная нагрузка на сеть за день')
     create_at: date = Field(sa_column=Column('create_at', Date, unique=True), title='Дата')
 
 
