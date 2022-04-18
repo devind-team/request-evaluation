@@ -6,7 +6,7 @@ authors = ["MarionetkaX <sergey07061999@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.75.0"
+fastapi = "^0.75.2"
 uvicorn = "^0.17.6"
 SQLAlchemy = "^1.4.32"
 alembic = "^1.7.7"
@@ -14,8 +14,10 @@ sqlmodel = "^0.0.6"
 psycopg2-binary = "^2.9.3"
 asyncpg = "^0.25.0"
 python-dotenv = "^0.20.0"
-docxtpl = "^0.15.2"
+docxtpl = "^0.16.0"
 Jinja2 = "^3.1.1"
+redis = "^4.2.2"
+aioschedule = "^0.5.2"
 
 [tool.poetry.dev-dependencies]
 
