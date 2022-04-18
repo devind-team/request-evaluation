@@ -1,16 +1,11 @@
-from fastapi import Depends, FastAPI
-from fastapi.responses import RedirectResponse
-from sqlalchemy.future import select
+from fastapi import Depends, FastAPI, status
+from fastapi.responses import RedirectResponse, JSONResponse
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 from datetime import date, timedelta
-from database import get_session
+from database import get_session, engine
 from models import Traffic, TrafficCreate
-from generate_word.generate_file import create_report
-from send_message.send_email import send_file
-from settings import CONFIG_EMAIL
-from os import remove
 
 app = FastAPI()
 
@@ -46,24 +41,3 @@ async def add_traffic(traffic: TrafficCreate,
     await session.commit()
     await session.refresh(traffic)
     return traffic
-
-
-@app.get('/email',
-         response_model=list[Traffic])
-async def send_message(session: AsyncSession = Depends(get_session)):
-    get_record = (await session.execute(
-        select(Traffic).
-        where(Traffic.create_at == date.today() - timedelta(days=1)))).scalar()
-    path_report = create_report(get_record.counter,
-                                round(get_record.average_load, 2),
-                                round(get_record.maximum_load, 2)
-                                )
-    await send_file(CONFIG_EMAIL['MAIL_FROM'],
-                    CONFIG_EMAIL['MAIL_PASSWORD'],
-                    CONFIG_EMAIL['MAIL_FROM'],
-                    CONFIG_EMAIL['MAIL_TO'],
-                    path_report,
-                    CONFIG_EMAIL['MAIL_SERVER'],
-                    CONFIG_EMAIL['MAIL_PORT']
-                    )
-    remove(path_report)
