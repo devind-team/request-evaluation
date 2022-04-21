@@ -3,10 +3,14 @@ FROM python:3.9.10-slim
 ENV PYTHONUNBUFFERED 1
 ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
+ENV TZ="Europe/Moscow"
 
-RUN mkdir /requestEvaluation
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone
 
-WORKDIR /requestEvaluation
+RUN mkdir /request-evaluation
+
+WORKDIR /request-evaluation
 
 RUN mkdir /static && \
     apt-get update -y && \
@@ -15,10 +19,8 @@ RUN mkdir /static && \
 #    apt-get autoremove -y && \
 #    rm -rf /var/lib/apt/lists/*
 
-COPY ./pyproject.toml /requestEvaluation
+COPY ./ /request-evaluation
 
 RUN poetry install
 
-COPY ./ /requestEvaluation
-
-CMD poetry run uvicorn main:app --reload --host 0.0.0.0 --port 80
+# CMD poetry run uvicorn main:app --reload --host 0.0.0.0 --port 80

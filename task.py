@@ -1,4 +1,5 @@
 import aioschedule as schedule
+from os import remove
 from asyncio import get_event_loop
 from sqlalchemy.future import select
 from datetime import date, timedelta
@@ -8,7 +9,6 @@ from send_message.send_email import send_file
 from database import engine
 from models import Traffic
 from settings import CONFIG_EMAIL
-from os import remove
 
 
 async def send_message():
