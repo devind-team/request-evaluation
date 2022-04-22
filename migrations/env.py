@@ -6,11 +6,21 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
+from configparser import ConfigParser
+from os import path
 
 from sqlmodel import SQLModel
 
+from settings import get_settings
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+
+config = ConfigParser()
+config.read(path.join('alembic.ini'))
+config.set('alembic', 'sqlalchemy.url', get_settings().db_sync_connections)
+with open(path.join('alembic.ini'), 'w') as configfile:
+    config.write(configfile)
 config = context.config
 
 # Interpret the config file for Python logging.
@@ -42,7 +52,7 @@ def run_migrations_offline():
     Calls to context.execute() here emit the given string to the
     script output.
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = config.get_main_option(get_settings().db_sync_connections)
     context.configure(
         url=url,
         target_metadata=target_metadata,
