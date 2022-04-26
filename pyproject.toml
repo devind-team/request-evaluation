@@ -6,8 +6,8 @@ authors = ["MarionetkaX <sergey07061999@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "^0.75.2"
-uvicorn = "^0.17.6"
+fastapi = "^0.75.1"
+uvicorn = "^0.17.4"
 SQLAlchemy = "^1.4.32"
 alembic = "^1.7.7"
 sqlmodel = "^0.0.6"
