@@ -6,8 +6,7 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
-from configparser import ConfigParser
-from os import path
+from database import engine
 
 from sqlmodel import SQLModel
 
@@ -16,11 +15,6 @@ from settings import get_settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 
-config = ConfigParser()
-config.read(path.join('alembic.ini'))
-config.set('alembic', 'sqlalchemy.url', get_settings().db_sync_connections)
-with open(path.join('alembic.ini'), 'w') as configfile:
-    config.write(configfile)
 config = context.config
 
 # Interpret the config file for Python logging.
@@ -76,16 +70,8 @@ async def run_migrations_online():
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    connectable = AsyncEngine(
-        engine_from_config(
-            config.get_section(config.config_ini_section),
-            prefix="sqlalchemy.",
-            poolclass=pool.NullPool,
-            future=True,
-        )
-    )
 
-    async with connectable.connect() as connection:
+    async with engine.connect() as connection:
         await connection.run_sync(do_run_migrations)
 
 
