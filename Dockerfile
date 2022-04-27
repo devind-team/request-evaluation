@@ -12,8 +12,9 @@ RUN mkdir /request-evaluation
 
 WORKDIR /request-evaluation
 
-RUN mkdir /static && \
-    apt-get update -y && \
+RUN mkdir /static
+
+RUN apt-get update -y && \
     pip install poetry && \
     pip install --upgrade pip
 #    apt-get autoremove -y && \
