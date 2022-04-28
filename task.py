@@ -31,7 +31,7 @@ async def send_message():
     remove(path_report)
     sleep(1)
 
-schedule.every().day.at('08:00').do(send_message)
+schedule.every().day.at('12:00').do(send_message)
 # schedule.every(30).seconds.do(send_message)
 
 while True:
