@@ -8,11 +8,10 @@ ENV TZ="Europe/Moscow"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone
 
-RUN mkdir /request-evaluation
+RUN mkdir /request-evaluation && \
+    mkdir /request-evaluation/static
 
 WORKDIR /request-evaluation
-
-RUN mkdir /static
 
 RUN apt-get update -y && \
     pip install poetry && \
