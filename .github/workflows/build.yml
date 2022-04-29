@@ -32,9 +32,6 @@ jobs:
           generateReleaseNotes: true
     outputs:
       tag: ${{ steps.tag_version.outputs.new_tag }}
-      version: ${{ steps.tag_version.outputs.new_version }}
-
-
 
   request-evaluation:
     name: request-evaluation
@@ -60,41 +57,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=semver,pattern={{version}},value=${{ needs.release.outputs.version }}
-          flavor: latest=auto
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-  email:
-    name: email
-    needs: release
-    permissions:
-      contents: read
-      packages: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: refs/tags/${{ needs.release.outputs.tag }}
-      - name: set up Docker builder
-        uses: docker/setup-buildx-action@v1
-      - name: Log in to the Cntainer registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extra metadata (tags, labels)
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=semver,pattern={{version}},value=${{ needs.release.outputs.version }}
+          tags: type=semver,pattern={{version}},value=${{ needs.release.outputs.tag }}
           flavor: latest=auto
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
