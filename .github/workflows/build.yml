@@ -9,14 +9,44 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          allowUpdates: true
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          bodyFile: CHANGELOG.md
+          generateReleaseNotes: true
+    outputs:
+      tag: ${{ steps.tag_version.outputs.new_tag }}
+      version: ${{ steps.tag_version.outputs.new_version }}
+
+
+
   request-evaluation:
     name: request-evaluation
+    needs: release
     permissions:
       contents: read
       packages: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: refs/tags/${{ needs.release.outputs.tag }}
       - name: set up Docker builder
         uses: docker/setup-buildx-action@v1
       - name: Log in to the Cntainer registry
@@ -30,6 +60,8 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: type=semver,pattern={{version}},value=${{ needs.release.outputs.version }}
+          flavor: latest=auto
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -40,12 +72,15 @@ jobs:
 
   email:
     name: email
+    needs: release
     permissions:
       contents: read
       packages: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: refs/tags/${{ needs.release.outputs.tag }}
       - name: set up Docker builder
         uses: docker/setup-buildx-action@v1
       - name: Log in to the Cntainer registry
@@ -59,6 +94,8 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: type=semver,pattern={{version}},value=${{ needs.release.outputs.version }}
+          flavor: latest=auto
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
