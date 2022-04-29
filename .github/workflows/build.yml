@@ -1,8 +1,8 @@
 name: Build
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
