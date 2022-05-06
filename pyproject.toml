@@ -5,7 +5,7 @@ description = ""
 authors = ["MarionetkaX <sergey07061999@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 fastapi = "^0.75.2"
 uvicorn = "^0.17.6"
 SQLAlchemy = "^1.4.32"
