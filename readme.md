@@ -46,3 +46,19 @@
      ```shell
      sudo docker-compose run request-evaluation poetry run python -m alembic upgrade head
      ```
+   
+# Основные URL
+
+* http://127.0.0.1:8000/traffic/
+  * (POST) - принимает запрос с секретным ключем и увеличивает счетчик
+* http://127.0.0.1:8000/traffic/{token_access}/
+  * token_access - указывается для доступа к страницам из .env
+  * (GET) - проверяет токен доступа к странице
+* http://127.0.0.1:8000/identification_site/
+  * форма для создания токена доступа к новому сайту
+  * (POST) - отправляет название и секретный ключ 
+* http://127.0.0.1:8000/identification/
+  * (POST) - принимает и добавляет в бд новую запись
+* http://127.0.0.1:8000/info/{identification_site}/
+  * identification_site - секретный ключ сайта
+  * (GET) - вывод текущей статистики 
