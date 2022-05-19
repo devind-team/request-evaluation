@@ -18,6 +18,8 @@ CONFIG_EMAIL = {
     'MAIL_SERVER': os.getenv('EMAIL_SERVER')
 }
 MAIL_TO = os.getenv('EMAIL_TO')
+NOTIFICATION_SEND_TIME = os.getenv('NOTIFICATION_SEND_TIME')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 class Settings(BaseSettings):
