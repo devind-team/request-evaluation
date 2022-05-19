@@ -8,7 +8,7 @@ from generate_word.generate_file import create_report
 from send_message.send_email import send_file
 from database import engine
 from models import Traffic
-from settings import CONFIG_EMAIL
+from settings import CONFIG_EMAIL, NOTIFICATION_SEND_TIME
 
 
 async def send_message():
@@ -31,8 +31,9 @@ async def send_message():
     remove(path_report)
     sleep(1)
 
-schedule.every().day.at('8:00').do(send_message)
-# schedule.every(30).seconds.do(send_message)
+
+schedule.every().day.at(f'{NOTIFICATION_SEND_TIME}').do(send_message)
+#schedule.every(10).seconds.do(send_message)
 
 while True:
     get_event_loop().run_until_complete(schedule.run_pending())
