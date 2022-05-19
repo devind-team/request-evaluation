@@ -1,13 +1,28 @@
-from fastapi import Depends, FastAPI, status
+from fastapi import \
+    Depends, \
+    FastAPI, \
+    status, \
+    HTTPException, \
+    Request, \
+    Form
 from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.sql import select
 from datetime import date, timedelta
 from database import get_session, engine
-from models import Traffic, TrafficCreate
+from models import \
+    Traffic, \
+    Site
+from settings import SECRET_KEY
 
 app = FastAPI()
+
+templates = Jinja2Templates(directory='templates')
 
 
 @app.get('/')
@@ -15,29 +30,82 @@ async def redirect_page_docs():
     return RedirectResponse('/docs#/')
 
 
-@app.get('/traffic',
-         response_model=list[Traffic])
-async def calculate(session: AsyncSession = Depends(get_session)):
-
-    insert_records = insert(Traffic).values(counter=1,
-                                            create_at=date.today())
-    update_records = insert_records.on_conflict_do_update(constraint='traffic_create_at_key',
-                                                          set_=dict(counter=Traffic.counter + 1))
-    await session.execute(update_records)
-    await session.execute(update(Traffic).
-                          where(Traffic.create_at == date.today()).
-                          values(average_load=Traffic.counter * 0.0184,
-                                 maximum_load=Traffic.counter * 0.0305,
-                                 ))
+@app.post('/traffic/',
+          response_model=Traffic)
+async def calculate(identification: str,
+                    session: AsyncSession = Depends(get_session)):
+    site = (await session.execute(select(Site).where(Site.identification == identification))).first()
+    if site is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')
+    traffic = (await session.execute(select(Traffic).
+                                     where(Traffic.site_id == site[0].id).
+                                     where(Traffic.create_at == date.today()))).first()
+    if traffic:
+        await session.execute(update(Traffic).
+                              where(Traffic.id == traffic[0].id).
+                              values(counter=Traffic.counter+1,
+                                     average_load=Traffic.counter * 0.0184,
+                                     maximum_load=Traffic.counter * 0.0305,
+                                     ))
+        await session.commit()
+        return traffic[0]
+    traffic_id = (await session.execute(insert(Traffic).values(counter=1,
+                                                               create_at=date.today(),
+                                                               site_id=site[0].id))).inserted_primary_key[0]
     await session.commit()
+    return (await session.execute(select(Traffic).where(Traffic.id == traffic_id))).first()[0]
 
 
-@app.post('/traffic')
-async def add_traffic(traffic: TrafficCreate,
-                      session: AsyncSession = Depends(get_session)):
-    traffic = Traffic(counter=traffic.counter,
-                      create_at=traffic.create_at)
-    session.add(traffic)
-    await session.commit()
-    await session.refresh(traffic)
-    return traffic
+@app.get('/traffic/{token_access}',
+         response_model=Site)
+async def verify_token_access(token_access: str):
+    if token_access == SECRET_KEY:
+        return RedirectResponse('/identification_site/')
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='У вас нет доступа к запрашиваемой странице')
+
+
+@app.post('/identification_site/')
+async def form_send(request: Request):
+    return templates.TemplateResponse('post_identification.html', {'request': request})
+
+
+@app.post('/identification/',
+          response_model=Site)
+async def generate_secret_key(website_url: str = Form(...),
+                              secret_key: str = Form(...),
+                              session: AsyncSession = Depends(get_session)):
+    print('username', website_url)
+    print('password', secret_key)
+    verify_site = (await session.execute(select(Site).where(Site.site_name == website_url))).first()
+    if verify_site is None:
+        site_id = (await session.execute(insert(Site).values(site_name=website_url,
+                                                             identification=secret_key))).inserted_primary_key[0]
+        await session.commit()
+        return JSONResponse(content=jsonable_encoder((await session.execute(select(Site).
+                                                                            where(Site.id == site_id))).first()))
+    return JSONResponse(content=jsonable_encoder((await session.execute(select(Site).
+                                                                        where(Site.site_name == website_url))).first()))
+
+
+@app.get('/info/{identification_site}',
+         response_model=Traffic,
+         response_class=HTMLResponse)
+async def infi_traffic(identification_site: str,
+                    request: Request,
+                    session: AsyncSession = Depends(get_session)):
+    site = (await session.execute(select(Site).where(Site.identification == identification_site))).first()
+    if site is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')
+    traffic_site = (await session.execute(select(Traffic).
+                                          where(Traffic.site_id == site[0].id).
+                                          where(Traffic.create_at == date.today()))).first()
+    if traffic_site is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Мониторинг сайта {site[0].site_name} '
+                                                                          f'за эту дату не производился')
+    return templates.TemplateResponse('statistics.html', {'request': request,
+                                                          'create_at': traffic_site[0].create_at,
+                                                          'counter': traffic_site[0].counter,
+                                                          'maximum_load': traffic_site[0].maximum_load,
+                                                          'average_load': traffic_site[0].average_load,
+                                                          })
