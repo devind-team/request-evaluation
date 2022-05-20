@@ -44,7 +44,8 @@ async def calculate(identification: str,
     if traffic:
         await session.execute(update(Traffic).
                               where(Traffic.id == traffic[0].id).
-                              values(counter=Traffic.counter+1,
+                              values(id=traffic[0].id,
+                                     counter=Traffic.counter+1,
                                      average_load=Traffic.counter * 0.0184,
                                      maximum_load=Traffic.counter * 0.0305,
                                      ))
