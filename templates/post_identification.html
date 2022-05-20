@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Добавление сайта</title>
 </head>
 <body>
     <div class="container">
         <form action="/identification/" enctype="multipart/form-data" method="post">
-            <label>Enter website url</label>
+            <label>Введите URL сайта</label>
             <br>
             <input name="website_url" type="website_url" >
             <br>
-            <label>Enter secret key</label>
+            <label>Введите email(s) (через запятую) на который будут приходить отчеты</label>
+            <br>
+            <input name="list_email" type="list_email" >
+            <br>
+            <label>Введите секретный ключ</label>
             <br>
             <input name="secret_key" type="secret_key" >
             <br><br>

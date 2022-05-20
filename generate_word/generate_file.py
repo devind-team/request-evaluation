@@ -4,7 +4,7 @@ from docxtpl import DocxTemplate
 from datetime import date, timedelta
 
 
-def create_report(counter: int, avg_load: float, max_load: float):
+def create_report(counter: int, avg_load: float, max_load: float, site_name: str):
     template_word = DocxTemplate(join(get_settings().template_dir, 'report.docx'))
     template_word.render(
         {
@@ -16,5 +16,5 @@ def create_report(counter: int, avg_load: float, max_load: float):
         }
     )
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
-    template_word.save(join(get_settings().static_dir, f'{current_date}.docx'))
-    return join(get_settings().static_dir, f'{current_date}.docx')
+    template_word.save(join(get_settings().static_dir, f'{current_date}-{site_name}.docx'))
+    return join(get_settings().static_dir, f'{current_date}-{site_name}.docx')

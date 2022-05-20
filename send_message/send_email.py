@@ -6,11 +6,11 @@ from email.mime.application import MIMEApplication
 
 
 async def send_file(login: str, password: str, sender: str, receivers: str,
-                    attachment_path: str, smtp_server: str, port: int):
+                    attachment_path: str, smtp_server: str, port: int, site_name: str):
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
     message = MIMEMultipart()
     message['Subject'] = 'Отчет о состоянии IT-инфраструктуры и результатах ' \
-                         'мониторинга инцидентов в области кибербезопасности.'
+                         f'мониторинга инцидентов в области кибербезопасности сайта {site_name}.'
     message['From'] = sender
     message['To'] = receivers
 
