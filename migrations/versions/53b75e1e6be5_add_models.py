@@ -1,8 +1,8 @@
-"""Add columnls
+"""Add models
 
-Revision ID: 97dde16d6b82
+Revision ID: 53b75e1e6be5
 Revises: 
-Create Date: 2022-05-19 16:42:58.169237
+Create Date: 2022-05-20 19:56:07.821485
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '97dde16d6b82'
+revision = '53b75e1e6be5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,19 +25,21 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('site',
-    sa.Column('identification', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('site_name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('email_id', sa.Integer(), nullable=True),
+    sa.Column('identification', sa.String(), nullable=False),
+    sa.Column('site_name', sa.String(), nullable=False),
+    sa.Column('email_id', sa.Integer(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['email_id'], ['email.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('identification'),
+    sa.UniqueConstraint('site_name')
     )
     op.create_table('traffic',
     sa.Column('counter', sa.Integer(), nullable=True),
-    sa.Column('average_load', sa.Float(), nullable=True),
-    sa.Column('maximum_load', sa.Float(), nullable=True),
+    sa.Column('average_load', sa.Float(), nullable=False),
+    sa.Column('maximum_load', sa.Float(), nullable=False),
     sa.Column('create_at', sa.Date(), nullable=False),
-    sa.Column('site_id', sa.Integer(), nullable=True),
+    sa.Column('site_id', sa.Integer(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['site_id'], ['site.id'], ),
     sa.PrimaryKeyConstraint('id')
