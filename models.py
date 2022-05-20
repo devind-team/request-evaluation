@@ -16,16 +16,21 @@ class Traffic(TrafficBase, table=True):
     id: int = Field(default=None, primary_key=True)
 
 
-class TrafficCreate(TrafficBase):
-    pass
-
-
 class SiteBase(SQLModel):
     # identification: str = Field(sa_column=Column('identification', unique=True), title='Индентификатор сайта')
     # site_name: str = Field(sa_column=Column('site_name', unique=True), title='URL сайта')
     identification: str = Field(title='Индентификатор сайта')
     site_name: str = Field(title='URL сайта')
+    email_id: int = Field(default=None, foreign_key='email.id')
 
 
 class Site(SiteBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+
+
+class EmailBase(SQLModel):
+    name: str = Field(title='Список email')
+
+
+class Email(EmailBase, table=True):
     id: int = Field(default=None, primary_key=True)
