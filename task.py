@@ -7,19 +7,20 @@ from time import sleep
 from generate_word.generate_file import create_report
 from send_message.send_email import send_file
 from database import engine
-from models import Traffic
+from models import Traffic, Site
 from settings import CONFIG_EMAIL, NOTIFICATION_SEND_TIME
 
 
 async def send_message():
     async with engine.connect() as session:
-        get_record = (await session.execute(
-            select(Traffic).
-            where(Traffic.create_at == date.today() - timedelta(days=1)))).first()
-    path_report = create_report(get_record.counter,
+        get_record = (await session.execute(select(Traffic).
+                                            where(Traffic.create_at == date.today() - timedelta(days=1)))).first()
+        site = (await session.execute(select(Site).
+                                      where(Site.id == get_record[0].site_id))).first()
+    path_report = create_report(get_record[0].counter,
                                 round(get_record.average_load, 2),
-                                round(get_record.maximum_load, 2)
-                                )
+                                round(get_record.maximum_load, 2),
+                                site[0].site_name)
     await send_file(CONFIG_EMAIL['MAIL_FROM'],
                     CONFIG_EMAIL['MAIL_PASSWORD'],
                     CONFIG_EMAIL['MAIL_FROM'],

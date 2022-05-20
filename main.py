@@ -17,7 +17,8 @@ from datetime import date, timedelta
 from database import get_session, engine
 from models import \
     Traffic, \
-    Site
+    Site, \
+    Email
 from settings import SECRET_KEY
 
 app = FastAPI()
@@ -65,7 +66,7 @@ async def verify_token_access(token_access: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='У вас нет доступа к запрашиваемой странице')
 
 
-@app.post('/identification_site/')
+@app.get('/identification_site/')
 async def form_send(request: Request):
     return templates.TemplateResponse('post_identification.html', {'request': request})
 
@@ -74,13 +75,15 @@ async def form_send(request: Request):
           response_model=Site)
 async def generate_secret_key(website_url: str = Form(...),
                               secret_key: str = Form(...),
+                              list_email: str = Form(...),
                               session: AsyncSession = Depends(get_session)):
-    print('username', website_url)
-    print('password', secret_key)
     verify_site = (await session.execute(select(Site).where(Site.site_name == website_url))).first()
     if verify_site is None:
+        email_id = (await session.execute(insert(Email).values(name=list_email))).inserted_primary_key[0]
+        await session.commit()
         site_id = (await session.execute(insert(Site).values(site_name=website_url,
-                                                             identification=secret_key))).inserted_primary_key[0]
+                                                             identification=secret_key,
+                                                             email_id=email_id))).inserted_primary_key[0]
         await session.commit()
         return JSONResponse(content=jsonable_encoder((await session.execute(select(Site).
                                                                             where(Site.id == site_id))).first()))
