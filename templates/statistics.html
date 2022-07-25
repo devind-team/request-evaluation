@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Сатистика сайта</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 <body>
-    <table style="border:1px solid black;margin-left:auto;margin-right:auto;text-align:center">
+    <div style="display: flex; justify-content: center">
+    <table class="table">
+      <thead>
         <tr>
             <th>Current date</th>
             <th>Counter request</th>
             <th>Maximum load</th>
             <th>Average load</th>
         </tr>
-        <tr>
-            <td>{{ create_at }}</td>
-            <td>{{ counter }}</td>
-            <td>{{ maximum_load }}</td>
-            <td>{{ average_load }}</td>
-        </tr>
+      </thead>
+        <tbody>
+            <tr>
+                <td>{{ create_at }}</td>
+                <td>{{ counter }}</td>
+                <td>{{ maximum_load }}</td>
+                <td>{{ average_load }}</td>
+            </tr>
+        </tbody>
     </table>
+    </div>
+
 </body>
 </html>
