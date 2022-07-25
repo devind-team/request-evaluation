@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
@@ -22,6 +23,21 @@ from models import \
 from settings import SECRET_KEY
 
 app = FastAPI()
+
+origins = [
+    'http://monitoring.sbmpei.ru',
+    'https://monitoring.sbmpei.ru',
+    'http://localhost',
+    'http://localhost:8095',
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 templates = Jinja2Templates(directory='templates')
 
