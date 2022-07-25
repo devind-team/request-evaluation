@@ -25,8 +25,8 @@ from settings import SECRET_KEY
 app = FastAPI()
 
 origins = [
-    'http://monitoring.sbmpei.ru',
-    'https://monitoring.sbmpei.ru',
+    'http://sbmpei.ru',
+    'https://sbmpei.ru',
     'http://localhost',
     'http://localhost:8095',
 ]
