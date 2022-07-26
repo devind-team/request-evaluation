@@ -3,10 +3,11 @@ poetry.lock
 .env
 
 # VuePress files
+docs/
 docs/.vuepress/.temp/
 docs/.vuepress/.cache/
 docs/.vuepress/dist/
-docs/*
+
 
 # Dist files
 dist/
