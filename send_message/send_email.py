@@ -22,7 +22,7 @@ async def send_file(
     message['From'] = sender
     message['To'] = receivers
 
-    msg_content = f'<h4>Добрый день,<br> Отчет о состоянии IT-инфраструктуры за {current_date}.</h4>\n'
+    msg_content = f'Добрый день,\nОтчет о состоянии IT-инфраструктуры за {current_date}.\n'
     body = MIMEText(msg_content, 'html')
     message.attach(body)
 
