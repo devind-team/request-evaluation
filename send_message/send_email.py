@@ -17,7 +17,8 @@ async def send_file(
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
     message = MIMEMultipart()
     message['Subject'] = 'Отчет о состоянии IT-инфраструктуры и результатах ' \
-                         f'мониторинга инцидентов в области кибербезопасности сайта {site_name}.'
+                         f"мониторинга инцидентов в области кибербезопасности сайта " \
+                         f"{site_name.replace('/', '').replace('https:', '')}."
     message['From'] = sender
     message['To'] = receivers
 
