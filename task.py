@@ -39,8 +39,8 @@ async def send_message():
             sleep(1)
 
 
-schedule.every().day.at(f'{NOTIFICATION_SEND_TIME}').do(send_message)
-#schedule.every(20).seconds.do(send_message)
+# schedule.every().day.at(f'{NOTIFICATION_SEND_TIME}').do(send_message)
+schedule.every(20).seconds.do(send_message)
 
 while True:
     get_event_loop().run_until_complete(schedule.run_pending())
