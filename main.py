@@ -63,8 +63,11 @@ async def calculate(identification: str,
                               where(Traffic.id == traffic[0].id).
                               values(id=traffic[0].id,
                                      counter=Traffic.counter+1,
+<<<<<<<<< Temporary merge branch 1
                                      average_load=Traffic.counter * 0.0125,
                                      maximum_load=Traffic.counter * 0.0195,
+=========
+>>>>>>>>> Temporary merge branch 2
                                      ))
         await session.commit()
         return traffic[0]
@@ -94,10 +97,11 @@ async def form_send(request: Request):
 
 @app.post('/identification/',
           response_model=Site)
-async def generate_secret_key(website_url: str = Form(...),
-                              secret_key: str = Form(...),
-                              list_email: str = Form(...),
-                              session: AsyncSession = Depends(get_session)):
+async def generate_secret_key(
+        website_url: str = Form(...),
+        secret_key: str = Form(...),
+        list_email: str = Form(...),
+        session: AsyncSession = Depends(get_session)):
     verify_site = (await session.execute(select(Site).where(Site.site_name == website_url))).first()
     if verify_site is None:
         email_id = (await session.execute(insert(Email).values(name=list_email))).inserted_primary_key[0]
@@ -115,9 +119,10 @@ async def generate_secret_key(website_url: str = Form(...),
 @app.get('/info/{identification_site}',
          response_model=Traffic,
          response_class=HTMLResponse)
-async def infi_traffic(identification_site: str,
-                    request: Request,
-                    session: AsyncSession = Depends(get_session)):
+async def infi_traffic(
+        identification_site: str,
+        request: Request,
+        session: AsyncSession = Depends(get_session)):
     site = (await session.execute(select(Site).where(Site.identification == identification_site))).first()
     if site is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')
