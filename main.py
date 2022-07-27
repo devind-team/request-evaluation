@@ -63,8 +63,8 @@ async def calculate(
                               where(Traffic.id == traffic[0].id).
                               values(id=traffic[0].id,
                                      counter=Traffic.counter+1,
-                                     average_load=Traffic.counter * 0.0184,
-                                     maximum_load=Traffic.counter * 0.0305,
+                                     average_load=Traffic.counter * 0.0125,
+                                     maximum_load=Traffic.counter * 0.0195,
                                      ))
         await session.commit()
         return traffic[0]
