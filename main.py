@@ -25,12 +25,8 @@ from services.network_load import interest_calculation
 
 app = FastAPI()
 
-origins = [
-    'http://sbmpei.ru',
-    'https://sbmpei.ru',
-    'http://localhost',
-    'http://localhost:8095',
-]
+origins = ['*']
+
 
 app.add_middleware(
     CORSMiddleware,
