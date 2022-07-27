@@ -63,11 +63,6 @@ async def calculate(identification: str,
                               where(Traffic.id == traffic[0].id).
                               values(id=traffic[0].id,
                                      counter=Traffic.counter+1,
-<<<<<<<<< Temporary merge branch 1
-                                     average_load=Traffic.counter * 0.0125,
-                                     maximum_load=Traffic.counter * 0.0195,
-=========
->>>>>>>>> Temporary merge branch 2
                                      ))
         await session.commit()
         return traffic[0]
