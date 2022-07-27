@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
@@ -24,6 +25,21 @@ from services.network_load import interest_calculation
 
 app = FastAPI()
 
+origins = [
+    'http://sbmpei.ru',
+    'https://sbmpei.ru',
+    'http://localhost',
+    'http://localhost:8095',
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 templates = Jinja2Templates(directory='templates')
 
 
@@ -34,8 +50,9 @@ async def redirect_page_docs():
 
 @app.post('/traffic/',
           response_model=Traffic)
-async def calculate(identification: str,
-                    session: AsyncSession = Depends(get_session)):
+async def calculate(
+        identification: str,
+        session: AsyncSession = Depends(get_session)):
     site = (await session.execute(select(Site).where(Site.identification == identification))).first()
     if site is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')
@@ -76,10 +93,11 @@ async def form_send(request: Request):
 
 @app.post('/identification/',
           response_model=Site)
-async def generate_secret_key(website_url: str = Form(...),
-                              secret_key: str = Form(...),
-                              list_email: str = Form(...),
-                              session: AsyncSession = Depends(get_session)):
+async def generate_secret_key(
+        website_url: str = Form(...),
+        secret_key: str = Form(...),
+        list_email: str = Form(...),
+        session: AsyncSession = Depends(get_session)):
     verify_site = (await session.execute(select(Site).where(Site.site_name == website_url))).first()
     if verify_site is None:
         email_id = (await session.execute(insert(Email).values(name=list_email))).inserted_primary_key[0]
@@ -97,9 +115,10 @@ async def generate_secret_key(website_url: str = Form(...),
 @app.get('/info/{identification_site}',
          response_model=Traffic,
          response_class=HTMLResponse)
-async def infi_traffic(identification_site: str,
-                    request: Request,
-                    session: AsyncSession = Depends(get_session)):
+async def infi_traffic(
+        identification_site: str,
+        request: Request,
+        session: AsyncSession = Depends(get_session)):
     site = (await session.execute(select(Site).where(Site.identification == identification_site))).first()
     if site is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')
