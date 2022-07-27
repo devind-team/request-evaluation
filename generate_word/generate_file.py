@@ -1,4 +1,4 @@
-from os.path import join
+from os.path import join, exists
 from settings import get_settings
 from docxtpl import DocxTemplate
 from datetime import date, timedelta
@@ -16,5 +16,6 @@ def create_report(counter: int, avg_load: float, max_load: float, site_name: str
         }
     )
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
-    template_word.save(join(get_settings().static_dir, f'{current_date}-{site_name}.docx'))
-    return join(get_settings().static_dir, f'{current_date}-{site_name}.docx')
+    path_report = join(get_settings().static_dir, f"{current_date}-{site_name.replace('/', '').replace('https:', '')}.docx")
+    template_word.save(path_report)
+    return path_report

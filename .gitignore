@@ -1,3 +1,16 @@
 .idea
 poetry.lock
 .env
+
+# VuePress files
+docs/
+docs/.vuepress/.temp/
+docs/.vuepress/.cache/
+docs/.vuepress/dist/
+
+
+# Dist files
+dist/
+
+# Node modules
+node_modules/

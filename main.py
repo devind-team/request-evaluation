@@ -9,6 +9,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
@@ -23,6 +24,21 @@ from settings import SECRET_KEY
 from services.network_load import interest_calculation
 
 app = FastAPI()
+
+origins = [
+    'http://sbmpei.ru',
+    'https://sbmpei.ru',
+    'http://localhost',
+    'http://localhost:8095',
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 templates = Jinja2Templates(directory='templates')
 
@@ -47,6 +63,8 @@ async def calculate(identification: str,
                               where(Traffic.id == traffic[0].id).
                               values(id=traffic[0].id,
                                      counter=Traffic.counter+1,
+                                     average_load=Traffic.counter * 0.0125,
+                                     maximum_load=Traffic.counter * 0.0195,
                                      ))
         await session.commit()
         return traffic[0]

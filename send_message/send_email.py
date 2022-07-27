@@ -5,16 +5,24 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
 
-async def send_file(login: str, password: str, sender: str, receivers: str,
-                    attachment_path: str, smtp_server: str, port: int, site_name: str):
+async def send_file(
+        login: str,
+        password: str,
+        sender: str,
+        receivers: str,
+        attachment_path: str,
+        smtp_server: str,
+        port: int,
+        site_name: str):
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
     message = MIMEMultipart()
     message['Subject'] = 'Отчет о состоянии IT-инфраструктуры и результатах ' \
-                         f'мониторинга инцидентов в области кибербезопасности сайта {site_name}.'
+                         f"мониторинга инцидентов в области кибербезопасности сайта " \
+                         f"{site_name.replace('/', '').replace('https:', '')}."
     message['From'] = sender
     message['To'] = receivers
 
-    msg_content = f'<h4>Добрый день,<br> Отчет о состоянии IT-инфраструктуры за {current_date}.</h4>\n'
+    msg_content = f'Добрый день,\nОтчет о состоянии IT-инфраструктуры за {current_date}.\n'
     body = MIMEText(msg_content, 'html')
     message.attach(body)
 
@@ -26,4 +34,3 @@ async def send_file(login: str, password: str, sender: str, receivers: str,
     with smtplib.SMTP_SSL(smtp_server, port) as server:
         server.login(login, password)
         server.sendmail(sender, receivers.split(', '), message.as_string())
-        server.quit()
