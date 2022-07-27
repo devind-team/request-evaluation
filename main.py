@@ -20,6 +20,7 @@ from models import \
     Site, \
     Email
 from settings import SECRET_KEY
+from services.network_load import interest_calculation
 
 app = FastAPI()
 
@@ -46,14 +47,15 @@ async def calculate(identification: str,
                               where(Traffic.id == traffic[0].id).
                               values(id=traffic[0].id,
                                      counter=Traffic.counter+1,
-                                     average_load=Traffic.counter * 0.0184,
-                                     maximum_load=Traffic.counter * 0.0305,
                                      ))
         await session.commit()
         return traffic[0]
     traffic_id = (await session.execute(insert(Traffic).values(counter=1,
                                                                create_at=date.today(),
-                                                               site_id=site[0].id))).inserted_primary_key[0]
+                                                               site_id=site[0].id,
+                                                               average_load=interest_calculation()['average_load'],
+                                                               maximum_load=interest_calculation()['maximum_load'],
+                                                               ))).inserted_primary_key[0]
     await session.commit()
     return (await session.execute(select(Traffic).where(Traffic.id == traffic_id))).first()[0]
 
