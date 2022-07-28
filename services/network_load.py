@@ -7,7 +7,7 @@ def interest_calculation() -> dict:
     """Генерация процента нагруженности сети."""
 
     week_day = datetime.today().weekday()
-    if (week_day >= 0) and (week_day <= 4):
+    if 0 <= week_day <= 4:
         return {
             'average_load': 45 + uniform(5, 10),
             'maximum_load': 45 + uniform(10, 20)
