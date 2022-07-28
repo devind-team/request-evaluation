@@ -1,10 +1,14 @@
-from typing import Optional
-from sqlmodel import SQLModel, Field
+"""Модели проекта."""
 from datetime import date
-from sqlalchemy import Date, Column, String
+from typing import Optional
+
+from sqlalchemy import Column, String
+from sqlmodel import Field, SQLModel
 
 
 class TrafficBase(SQLModel):
+    """Базовая модель Traffic."""
+
     counter: int = Field(default=1, title='Количество запросов в день')
     average_load: Optional[float] = Field(default=0, nullable=False, title='Средняя нагрузка на сеть за день')
     maximum_load: Optional[float] = Field(default=0, nullable=False, title='Максимальная нагрузка на сеть за день')
@@ -13,22 +17,34 @@ class TrafficBase(SQLModel):
 
 
 class Traffic(TrafficBase, table=True):
-    id: int = Field(default=None, primary_key=True)
+    """Модель Traffic."""
+
+    id: int = Field(default=None, primary_key=True) # noqa
 
 
 class SiteBase(SQLModel):
-    identification: str = Field(sa_column=Column('identification', String, unique=True, nullable=False), title='Индентификатор сайта')
+    """Базовая модель Site."""
+
+    identification: str = Field(
+        sa_column=Column('identification', String, unique=True, nullable=False),
+        title='Индентификатор сайта')
     site_name: str = Field(sa_column=Column('site_name', String, unique=True, nullable=False), title='URL сайта')
     email_id: int = Field(default=None, foreign_key='email.id', nullable=False)
 
 
 class Site(SiteBase, table=True):
-    id: int = Field(default=None, primary_key=True)
+    """Модель Site."""
+
+    id: int = Field(default=None, primary_key=True) # noqa
 
 
 class EmailBase(SQLModel):
+    """Базовая модель Email."""
+
     name: str = Field(nullable=False, title='Список email')
 
 
 class Email(EmailBase, table=True):
-    id: int = Field(default=None, primary_key=True)
+    """Модель Email."""
+
+    id: int = Field(default=None, primary_key=True) # noqa

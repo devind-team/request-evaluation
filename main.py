@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select
 
-from database import get_session
+from database import get_session # noqa
 from models import Email, Site, Traffic
 from services.network_load import interest_calculation
 from settings import SECRET_KEY
@@ -39,8 +39,8 @@ async def redirect_page_docs() -> RedirectResponse:
 
 
 @app.post('/traffic/', response_model=Traffic)
-async def calculate(identification: str, session: AsyncSession = Depends(get_session)):
-    """Функция на принятие post запроса и обновления счетчика в базе данных."""
+async def calculate(identification: str, session: AsyncSession = Depends(get_session)): # noqa
+    """Функция на обновление счетчика в базе данных."""
     site = (await session.execute(select(Site).where(Site.identification == identification))).first()[0]
     if site is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')
@@ -51,7 +51,7 @@ async def calculate(identification: str, session: AsyncSession = Depends(get_ses
         await session.execute(update(Traffic).
                               where(Traffic.id == traffic[0].id).
                               values(id=traffic[0].id,
-                                     counter=Traffic.counter+1,
+                                     counter=Traffic.counter + 1,
                                      ))
         await session.commit()
         return traffic[0]
@@ -61,14 +61,15 @@ async def calculate(identification: str, session: AsyncSession = Depends(get_ses
         create_at=date.today(),
         site_id=site.id,
         average_load=network_load['average_load'],
-        maximum_load=network_load['maximum_load'],
-        ))).inserted_primary_key[0]
+        maximum_load=network_load['maximum_load'],)
+    )).inserted_primary_key[0]
     await session.commit()
     return (await session.execute(select(Traffic).where(Traffic.id == traffic_id))).first()[0]
 
 
-@app.get('/traffic/{token_access}', response_model=Site)
-async def verify_token_access(token_access: str):
+@app.get('/traffic/{token_access}', response_model=Site) # noqa
+async def verify_token_access(token_access: str): # noqa
+    """Функция проверки доступа."""
     if token_access == SECRET_KEY:
         return RedirectResponse('/identification_site/')
     else:
@@ -76,7 +77,8 @@ async def verify_token_access(token_access: str):
 
 
 @app.get('/identification_site/')
-async def form_send(request: Request):
+async def form_send(request: Request): # noqa
+    """Функция получения идентификатора сайта."""
     return templates.TemplateResponse('post_identification.html', {'request': request})
 
 
@@ -85,7 +87,8 @@ async def generate_secret_key(
         website_url: str = Form(...),
         secret_key: str = Form(...),
         list_email: str = Form(...),
-        session: AsyncSession = Depends(get_session)):
+        session: AsyncSession = Depends(get_session)): # noqa
+    """Функция добавления сайта для отслеживания."""
     verify_site = (await session.execute(select(Site).where(Site.site_name == website_url))).first()
     if verify_site is None:
         email_id = (await session.execute(insert(Email).values(name=list_email))).inserted_primary_key[0]
@@ -100,8 +103,9 @@ async def generate_secret_key(
                                                                         where(Site.site_name == website_url))).first()))
 
 
-@app.get('/info/{identification_site}', response_model=Traffic, response_class=HTMLResponse)
-async def infi_traffic(identification_site: str, request: Request, session: AsyncSession = Depends(get_session)):
+@app.get('/info/{identification_site}', response_model=Traffic, response_class=HTMLResponse) # noqa
+async def infi_traffic(identification_site: str, request: Request, session: AsyncSession = Depends(get_session)): # noqa
+    """Функция получения параметров сайта."""
     site = (await session.execute(select(Site).where(Site.identification == identification_site))).first()[0]
     if site is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Запрашиваемый ключ доступа не найден')

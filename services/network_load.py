@@ -5,7 +5,6 @@ from random import uniform
 
 def interest_calculation() -> dict:
     """Генерация процента нагруженности сети."""
-
     week_day = datetime.today().weekday()
     if 0 <= week_day <= 4:
         return {
