@@ -27,8 +27,8 @@ async def send_message() -> None:
             email_to = (await session.execute(select(Email).
                                               where(Email.id == site[0].email_id))).first()[0].name
             path_report = create_report(get_record[0].counter,
-                                        round(get_record[0].average_load, 2),
-                                        round(get_record[0].maximum_load, 2),
+                                        get_record[0].average_load,
+                                        get_record[0].maximum_load,
                                         site[0].site_name)
             await generate_message(
                 CONFIG_EMAIL['MAIL_FROM'],
