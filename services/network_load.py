@@ -5,14 +5,25 @@ from random import uniform
 
 def interest_calculation() -> dict:
     """Генерация процента нагруженности сети."""
-    week_day = datetime.today().weekday()
-    if 0 <= week_day <= 4:
-        return {
-            'average_load': round(45 + uniform(5, 10), 2),
-            'maximum_load': round(45 + uniform(10, 20), 2)
-        }
+    if datetime.today().month == 1 or 6 <= datetime.today().month <= 8:
+        if 0 <= datetime.today().weekday() <= 4:
+            return {
+                'average_load': round(15 + uniform(0, 5), 2),
+                'maximum_load': round(15 + uniform(5, 7), 2)
+            }
+        else:
+            return {
+                'average_load': round(10 + uniform(0, 5), 2),
+                'maximum_load': round(10 + uniform(5, 7), 2)
+            }
     else:
-        return {
-            'average_load': round(42 + uniform(0, 5), 2),
-            'maximum_load': round(42 + uniform(5, 10), 2)
-        }
+        if 0 <= datetime.today().weekday() <= 4:
+            return {
+                'average_load': round(45 + uniform(5, 10), 2),
+                'maximum_load': round(45 + uniform(10, 20), 2)
+            }
+        else:
+            return {
+                'average_load': round(42 + uniform(0, 5), 2),
+                'maximum_load': round(42 + uniform(5, 10), 2)
+            }

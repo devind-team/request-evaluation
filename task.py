@@ -45,7 +45,7 @@ async def send_message() -> None:
 
 
 schedule.every().day.at(f'{NOTIFICATION_SEND_TIME}').do(send_message)
-# schedule.every(20).seconds.do(send_message) # noqa
+# schedule.every(10).seconds.do(send_message) # noqa
 
 while True:
     get_event_loop().run_until_complete(schedule.run_pending())
