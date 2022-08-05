@@ -6,24 +6,26 @@ from random import uniform
 def interest_calculation() -> dict:
     """Генерация процента нагруженности сети."""
     if datetime.today().month == 1 or 6 <= datetime.today().month <= 8:
-        if 0 <= datetime.today().weekday() <= 4:
-            return {
-                'average_load': round(15 + uniform(0, 5), 2),
-                'maximum_load': round(15 + uniform(5, 7), 2)
-            }
-        else:
+        return week_day(average_load=15, maximum_load=42, start=0, average=5, end=10)
+    else:
+        return week_day(average_load=45, maximum_load=45, start=5, average=10, end=20)
+
+
+def week_day(average_load: int, maximum_load: int, start: int, average: int, end: int) -> dict:
+    """Вычисление нагрузки в зависимости от дня недели."""
+    match datetime.today().weekday():
+        case 5:
             return {
                 'average_load': round(10 + uniform(0, 5), 2),
-                'maximum_load': round(10 + uniform(5, 7), 2)
+                'maximum_load': round(15 + uniform(5, 7), 2)
             }
-    else:
-        if 0 <= datetime.today().weekday() <= 4:
+        case 6:
             return {
-                'average_load': round(45 + uniform(5, 10), 2),
-                'maximum_load': round(45 + uniform(10, 20), 2)
+                'average_load': round(5 + uniform(0, 5), 2),
+                'maximum_load': round(5 + uniform(5, 7), 2)
             }
-        else:
+        case _:
             return {
-                'average_load': round(42 + uniform(0, 5), 2),
-                'maximum_load': round(42 + uniform(5, 10), 2)
+                'average_load': round(average_load + uniform(start, average), 2),
+                'maximum_load': round(maximum_load + uniform(average, end), 2)
             }
