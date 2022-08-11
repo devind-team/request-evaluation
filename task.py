@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
 
-from database import engine # noqa
+from database import engine
 from models import Email, Site, Traffic
 from services.generate_word import create_report
 from services.send_email import generate_message
@@ -19,17 +19,25 @@ from settings import CONFIG_EMAIL, NOTIFICATION_SEND_TIME
 async def send_message() -> None:
     """Функция отправки письма по email."""
     async with sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)() as session:
-        get_records = (await session.execute(select(Traffic).
-                                             where(Traffic.create_at == date.today() - timedelta(days=1)))).all()
+        get_records = (await session.execute(
+            select(Traffic).
+            where(Traffic.create_at == date.today() - timedelta(days=1))
+        )).all()
         for get_record in get_records:
-            site = (await session.execute(select(Site).
-                                          where(Site.id == get_record[0].site_id))).first()
-            email_to = (await session.execute(select(Email).
-                                              where(Email.id == site[0].email_id))).first()[0].name
-            path_report = create_report(get_record[0].counter,
-                                        get_record[0].average_load,
-                                        get_record[0].maximum_load,
-                                        site[0].site_name)
+            site = (await session.execute(
+                select(Site).
+                where(Site.id == get_record[0].site_id)
+            )).first()
+            email_to = (await session.execute(
+                select(Email).
+                where(Email.id == site[0].email_id)
+            )).first()[0].name
+            path_report = create_report(
+                get_record[0].counter,
+                get_record[0].average_load,
+                get_record[0].maximum_load,
+                site[0].site_name
+            )
             await generate_message(
                 CONFIG_EMAIL['MAIL_FROM'],
                 CONFIG_EMAIL['MAIL_PASSWORD'],
