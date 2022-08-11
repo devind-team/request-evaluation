@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
 
-from database import engine
+from database import engine  # noqa
 from models import Email, Site, Traffic
 from services.generate_word import create_report
 from services.send_email import generate_message

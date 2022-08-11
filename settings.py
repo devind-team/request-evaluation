@@ -40,9 +40,9 @@ class Settings(BaseSettings):
                                                                 'DB_NAME')}
 
     @property
-    def db_sync_connections(self) -> str:
+    def db_sync_connections(self) -> str:  # noqa
         """Функция для получения настроек базы данных."""
-        return '%s://%s:%s@%s:%s/%s' % (  # noqa: FS001
+        return '%s://%s:%s@%s:%s/%s' % (  # noqa
             self.database['DB_SERVICE'],
             self.database['DB_USER'],
             self.database['DB_PASS'],
