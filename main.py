@@ -34,7 +34,7 @@ templates = Jinja2Templates(directory='templates')
 
 @app.get('/')
 async def redirect_page_docs() -> RedirectResponse:
-    """FastAPI - Swagger UI."""
+    """FastAPI - Swagger UI."""  # noqa: D403
     return RedirectResponse('/docs#/')
 
 
@@ -48,7 +48,7 @@ async def calculate(identification: str, session: AsyncSession = Depends(get_ses
         select(Traffic).
         where(Traffic.site_id == site.id).
         where(Traffic.create_at == date.today())
-        )).first()
+    )).first()
     if traffic:
         await session.execute(
             update(Traffic).
@@ -57,7 +57,7 @@ async def calculate(identification: str, session: AsyncSession = Depends(get_ses
                 id=traffic[0].id,
                 counter=Traffic.counter + 1,
             )
-            )
+        )
         await session.commit()
         return traffic[0]
     network_load = interest_calculation()
@@ -113,7 +113,7 @@ async def generate_secret_key(
                 (await session.execute(
                     select(Site).
                     where(Site.id == site_id)
-                    )).first()
+                )).first()
             )
         )
     return JSONResponse(
@@ -121,7 +121,7 @@ async def generate_secret_key(
             (await session.execute(
                 select(Site).
                 where(Site.site_name == website_url)
-                )).first()
+            )).first()
         )
     )
 
@@ -140,7 +140,7 @@ async def infi_traffic(
         select(Traffic).
         where(Traffic.site_id == site.id).
         where(Traffic.create_at == date.today())
-        )).first()
+    )).first()
     if traffic_site is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f'Мониторинг сайта {site.site_name} '

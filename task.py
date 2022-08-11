@@ -22,16 +22,16 @@ async def send_message() -> None:
         get_records = (await session.execute(
             select(Traffic).
             where(Traffic.create_at == date.today() - timedelta(days=1))
-            )).all()
+        )).all()
         for get_record in get_records:
             site = (await session.execute(
                 select(Site).
                 where(Site.id == get_record[0].site_id)
-                )).first()
+            )).first()
             email_to = (await session.execute(
                 select(Email).
                 where(Email.id == site[0].email_id)
-                )).first()[0].name
+            )).first()[0].name
             path_report = create_report(
                 get_record[0].counter,
                 get_record[0].average_load,
