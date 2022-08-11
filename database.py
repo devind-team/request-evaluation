@@ -1,9 +1,10 @@
 """Открытие соединения с базой данных."""
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel # noqa
+from sqlmodel import SQLModel  # noqa
 
-from settings import get_settings # noqa
+from settings import get_settings  # noqa
+
 
 engine = create_async_engine(
     get_settings().db_sync_connections, echo=True, future=True

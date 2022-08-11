@@ -8,6 +8,7 @@ from typing import Dict
 from dotenv import load_dotenv
 from pydantic import BaseSettings
 
+
 BASE_DIR: Path = Path(__file__).resolve(strict=False).parent
 load_dotenv(dotenv_path=join(BASE_DIR, '.env'))
 
@@ -39,9 +40,9 @@ class Settings(BaseSettings):
                                                                 'DB_NAME')}
 
     @property
-    def db_sync_connections(self) -> str: # noqa
+    def db_sync_connections(self) -> str:  # noqa
         """Функция для получения настроек базы данных."""
-        return '%s://%s:%s@%s:%s/%s' % ( # noqa
+        return '%s://%s:%s@%s:%s/%s' % (  # noqa
             self.database['DB_SERVICE'],
             self.database['DB_USER'],
             self.database['DB_PASS'],
