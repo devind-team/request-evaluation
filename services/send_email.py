@@ -7,14 +7,15 @@ from email.mime.text import MIMEText
 
 
 async def generate_message(
-        login: str,
-        password: str,
-        sender: str,
-        receivers: str,
-        attachment_path: str,
-        smtp_server: str,
-        port: int,
-        site_name: str) -> None:
+    login: str,
+    password: str,
+    sender: str,
+    receivers: str,
+    attachment_path: str,
+    smtp_server: str,
+    port: int,
+    site_name: str
+) -> None:
     """Функция оформления письма и прикрепление файла для отправки на почту."""
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
     message = MIMEMultipart()

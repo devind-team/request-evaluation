@@ -19,7 +19,7 @@ class TrafficBase(SQLModel):
 class Traffic(TrafficBase, table=True):
     """Модель Traffic."""
 
-    id: int = Field(default=None, primary_key=True) # noqa
+    id: int = Field(default=None, primary_key=True)  # noqa
 
 
 class SiteBase(SQLModel):
@@ -27,7 +27,8 @@ class SiteBase(SQLModel):
 
     identification: str = Field(
         sa_column=Column('identification', String, unique=True, nullable=False),
-        title='Индентификатор сайта')
+        title='Индентификатор сайта'
+    )
     site_name: str = Field(sa_column=Column('site_name', String, unique=True, nullable=False), title='URL сайта')
     email_id: int = Field(default=None, foreign_key='email.id', nullable=False)
 
@@ -35,7 +36,7 @@ class SiteBase(SQLModel):
 class Site(SiteBase, table=True):
     """Модель Site."""
 
-    id: int = Field(default=None, primary_key=True) # noqa
+    id: int = Field(default=None, primary_key=True)  # noqa
 
 
 class EmailBase(SQLModel):
@@ -47,4 +48,4 @@ class EmailBase(SQLModel):
 class Email(EmailBase, table=True):
     """Модель Email."""
 
-    id: int = Field(default=None, primary_key=True) # noqa
+    id: int = Field(default=None, primary_key=True)  # noqa
