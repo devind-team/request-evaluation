@@ -1,10 +1,8 @@
 name: Build project
 on:
-  workflow_run:
-    workflows:
-      - Lint
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
