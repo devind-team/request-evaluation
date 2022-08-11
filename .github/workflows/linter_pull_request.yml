@@ -9,37 +9,15 @@ jobs:
     name: Linter pull request
     runs-on: ubuntu-latest
     steps:
-#      - name: Checkout Code
-#        uses: actions/checkout@v3
-#        with:
-#          fetch-depth: 0
-#      - name: Lint python code
-#        uses: github/super-linter@v4
-#        env:
-#          VALIDATE_ALL_CODEBASE: false
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          DEFAULT_BRANCH: main
-#          PYTHON_FLAKE8_CONFIG_FILE: .flake8
-#          VALIDATE_PYTHON_FLAKE8: true
-      - name: Check out Git repository
+      - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-          check-latest: true
-
-      - name: Setup Poetry
-        uses: Gr1N/setup-poetry@v7
-      - name: Install dependencies
-        run: poetry install
-      - name: Run linter
-        run: poetry run flake8
-
-      - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          auto_fix: true
-          flake8: true
-          flake8_auto_fix: true
+          fetch-depth: 0
+      - name: Lint python code
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          PYTHON_FLAKE8_CONFIG_FILE: .flake8
+          VALIDATE_PYTHON_FLAKE8: true
