@@ -6,7 +6,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-async def generate_message(login: str, password: str,
+async def generate_message(
+    login: str,
+    password: str,
     sender: str,
     receivers: str,
     attachment_path: str,
