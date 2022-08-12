@@ -21,7 +21,7 @@ async def generate_message(
     message = MIMEMultipart()
     message['Subject'] = 'Отчет о состоянии IT-инфраструктуры и результатах ' \
                          f'мониторинга инцидентов в области кибербезопасности сайта ' \
-                         f"{site_name.replace('/', '').replace('https:', '')}."
+                         f"{site_name.replace('/', '').replace('https:', '')} за {current_date}."
     message['From'] = sender
     message['To'] = receivers
 
