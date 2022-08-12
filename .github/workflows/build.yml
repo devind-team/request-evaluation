@@ -12,17 +12,25 @@ jobs:
   linter:
     name: Lint request-evaluation
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          check-latest: true
+      - name: Setup Poetry
+        uses: Gr1N/setup-poetry@v7
+      - name: Install dependencies
+        run: poetry install
       - name: Lint python code
-        uses: github/super-linter@v4
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
-          PYTHON_FLAKE8_CONFIG_FILE: .flake8
-          VALIDATE_PYTHON_FLAKE8: true
+        run: poetry run flake8
 
   test:
     name: Testing request-evaluation
