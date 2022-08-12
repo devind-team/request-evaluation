@@ -6,8 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 
-async def generate_message(
-    login: str,
+async def generate_message(login: str,
     password: str,
     sender: str,
     receivers: str,
@@ -17,6 +16,10 @@ async def generate_message(
     site_name: str
 ) -> None:
     """Функция оформления письма и прикрепление файла для отправки на почту."""
+
+
+
+
     current_date = (date.today() - timedelta(days=1)).strftime('%d-%m-%Y')
     message = MIMEMultipart()
     message['Subject'] = 'Отчет о состоянии IT-инфраструктуры и результатах ' \
