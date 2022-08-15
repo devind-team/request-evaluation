@@ -13,19 +13,13 @@ def interest_calculation() -> dict:
 
 def week_day(average_load: int, maximum_load: int, start: int, average: int, end: int) -> dict:
     """Вычисление нагрузки в зависимости от дня недели."""
-    match datetime.today().weekday():
-        case 5:
-            return {
-                'average_load': round(10 + uniform(0, 5), 2),
-                'maximum_load': round(15 + uniform(5, 7), 2)
-            }
-        case 6:
-            return {
-                'average_load': round(5 + uniform(0, 5), 2),
-                'maximum_load': round(5 + uniform(5, 7), 2)
-            }
-        case _:
-            return {
-                'average_load': round(average_load + uniform(start, average), 2),
-                'maximum_load': round(maximum_load + uniform(average, end), 2)
-            }
+    if 0 <= datetime.today().weekday() <= 4:
+        return {
+            'average_load': round(average_load + uniform(start, average), 2),
+            'maximum_load': round(maximum_load + uniform(average, end), 2)
+        }
+    else:
+        return {
+            'average_load': round(3 + uniform(0, 3), 2),
+            'maximum_load': round(9 + uniform(0, 2), 2)
+        }
