@@ -6,9 +6,9 @@ from random import uniform
 def interest_calculation() -> dict:
     """Генерация процента нагруженности сети."""
     if datetime.today().month == 1 or 6 <= datetime.today().month <= 8:
-        return week_day(average_load=15, maximum_load=42, start=0, average=5, end=10)
+        return week_day(average_load=42, maximum_load=45, start=5, average=10, end=20)
     else:
-        return week_day(average_load=45, maximum_load=45, start=5, average=10, end=20)
+        return week_day(average_load=15, maximum_load=42, start=0, average=5, end=10)
 
 
 def week_day(average_load: int, maximum_load: int, start: int, average: int, end: int) -> dict:
