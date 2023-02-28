@@ -17,7 +17,7 @@ python-dotenv = "^0.21.0"
 docxtpl = "^0.16.0"
 Jinja2 = "^3.1.1"
 aioschedule = "^0.5.2"
-python-multipart = "^0.0.5"
+python-multipart = "^0.0.6"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"
